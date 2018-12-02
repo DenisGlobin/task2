@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
+    <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">Dashboard</div>
+                    <div class="card-header">Список заявок</div>
 
                     <div class="card-body">
                         @if (session('status'))
@@ -14,7 +14,8 @@
                             </div>
                         @endif
 
-                        <form>
+                        <form action="{{ route('processed') }}" method="post">
+                            @csrf
                             <table class="table table-hover">
                                 <thead>
                                 <tr>
@@ -29,42 +30,30 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr class="table-default">
-                                    <th scope="row">
-                                        <input type="checkbox" aria-label="Checkbox for following text input">
-                                    </th>
-                                    <td>1</td>
-                                    <td>Тема 1</td>
-                                    <td>Тестовое сообщение</td>
-                                    <td>Иван Иванов</td>
-                                    <td>test1@tst.com</td>
-                                    <td><a href="#">Файл</a></td>
-                                    <td>19:23 26.11.2018</td>
-                                </tr>
-                                <tr class="table-success">
-                                    <th scope="row">
-                                        <input type="checkbox" aria-label="Checkbox for following text input" disabled checked>
-                                    </th>
-                                    <td>2</td>
-                                    <td>Тема 2</td>
-                                    <td>Тестовое сообщение</td>
-                                    <td>Петр Петренко</td>
-                                    <td>test2@tst.com</td>
-                                    <td><a href="#">Файл</a></td>
-                                    <td>19:23 26.11.2018</td>
-                                </tr>
-                                <tr class="table-default">
-                                    <th scope="row">
-                                        <input type="checkbox" aria-label="Checkbox for following text input">
-                                    </th>
-                                    <td>3</td>
-                                    <td>Тема 3</td>
-                                    <td>Тестовое сообщение</td>
-                                    <td>Петр Петренко</td>
-                                    <td>test2@tst.com</td>
-                                    <td><a href="#">Файл</a></td>
-                                    <td>19:23 26.11.2018</td>
-                                </tr>
+                                    @foreach($orders as $order)
+                                        @if ($order->is_processed == 1)
+                                            <tr class="table-success">
+                                                <th scope="row">
+                                                <input type="checkbox" name="chkbox[]" value="{!! $order->id !!}" checked disabled>
+                                                </th>
+                                        @else
+                                            <tr class="table-default">
+                                                <th scope="row">
+                                                <input type="checkbox" name="chkbox[]" value="{!! $order->id !!}">
+                                                </th>
+                                        @endif
+                                        <td>{{ $order->id }}</td>
+                                        <td>{{ $order->title }}</td>
+                                        <td>{{ $order->message }}</td>
+                                        <td>{{ $order->user->name }}</td>
+                                        <td>{{ $order->user->email }}</td>
+                                        <td>
+                                            @if (! is_null($order->file_path))
+                                                <a href="{{ $order->file_path }}" target="_blank">Прикреплённый файл</a></td>
+                                            @endif
+                                        <td>{{ $order->created_at }}</td>
+                                    </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
 

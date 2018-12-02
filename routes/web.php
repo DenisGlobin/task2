@@ -18,4 +18,5 @@
 Auth::routes();
 
 Route::get('/', 'HomeController@index')->name('home')->middleware('auth');
-
+Route::post('/', 'HomeController@addOrder')->name('/orders/add')->middleware('auth');
+Route::post('/orders/processed', 'HomeController@processedOrders')->name('processed')->middleware('auth');
