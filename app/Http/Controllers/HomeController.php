@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\OrderAdded;
 use App\Order;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class HomeController extends Controller
 {
@@ -52,6 +55,10 @@ class HomeController extends Controller
             $request->session()->flash('error', 'Ошибка! Не получилось создать заказ');
             return back();
         }
+
+        $admin = User::where('is_admin', 1)->take(1)->get();
+        Mail::to($admin)->send(new OrderAdded($order));
+
         $request->session()->flash('success', 'Ваш заказ сохранён');
         return $this->getUserPage();
     }
@@ -94,10 +101,14 @@ class HomeController extends Controller
     private function uploadFile(Request $request)
     {
         $file = $request->file('file');
-        $uploadPath = public_path('files');
         $fileName = time().'_'.$file->getClientOriginalName();
-        $file->move($uploadPath, $fileName);
-        return url('/') . '/files/' . $fileName;
+        /*$path = Storage::putFileAs(
+            'public/attach', $file, $fileName
+        );*/
+        $path = $file->storeAs(
+            'public/attach', $fileName
+        );
+        return asset('storage/attach/' . $fileName);
     }
 
     /**
