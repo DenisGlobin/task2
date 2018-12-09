@@ -11,12 +11,12 @@
 |
 */
 
-/*Route::get('/', function () {
-    return view('welcome');
-});*/
-
 Auth::routes();
+Auth::routes(['verify' => true]);
 
-Route::get('/', 'HomeController@index')->name('home')->middleware('auth');
-Route::post('/', 'HomeController@addOrder')->name('/orders/add')->middleware('auth');
-Route::post('/orders/processed', 'HomeController@processedOrders')->name('processed')->middleware('auth');
+// User routes
+Route::get('/home', 'UserController@index')->name('home')->middleware('verified');
+Route::post('/', 'UserController@addOrder')->name('/orders/add')->middleware('verified');
+// Admin routes
+Route::get('/', 'AdminController@index')->name('orders')->middleware('auth', 'admin');
+Route::post('/orders/processed', 'AdminController@processedOrders')->name('processed')->middleware('auth', 'admin');

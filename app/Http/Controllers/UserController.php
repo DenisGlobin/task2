@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
-class HomeController extends Controller
+class UserController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -18,7 +18,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware(['auth', 'verified']);
     }
 
     /**
@@ -28,10 +28,11 @@ class HomeController extends Controller
      */
     public function index()
     {
-        if (Auth::user()->is_admin == 1) {
+        /*if (Auth::user()->is_admin == 1) {
             return $this->getAdminPage();
         }
-        return $this->getUserPage();
+        return $this->getUserPage();*/
+        return view('user.index', ['userId' => Auth::id()]);
     }
 
     /**
@@ -56,24 +57,11 @@ class HomeController extends Controller
             return back();
         }
 
-        $admin = User::where('is_admin', 1)->take(1)->get();
-        Mail::to($admin)->send(new OrderAdded($order));
+        $admin = User::where('is_admin', 1)->first();
+        Mail::to($admin)->queue(new OrderAdded($order));
 
         $request->session()->flash('success', 'Ваш заказ сохранён');
-        return $this->getUserPage();
-    }
-
-    /**
-     * Processing selected orders
-     *
-     * @param Request $request
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function processedOrders(Request $request)
-    {
-        $selectedOrders = $request->input('chkbox');
-        $this->processingOrders($selectedOrders);
-        return $this->getAdminPage();
+        return view('user.index', ['userId' => Auth::id()]);
     }
 
     /**
@@ -109,42 +97,5 @@ class HomeController extends Controller
             'public/attach', $fileName
         );
         return asset('storage/attach/' . $fileName);
-    }
-
-    /**
-     * Set property is_processed of the selected orders in Database as true
-     *
-     * @param array $chkboxes
-     */
-    private function processingOrders(array $chkboxes)
-    {
-        foreach ($chkboxes as $chkbox) {
-            $order = Order::findOrFail($chkbox);
-            $order->is_processed = 1;
-            $order->save();
-        }
-    }
-
-    /**
-     * Show user home page
-     *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    private function getUserPage()
-    {
-        return view('user.index', ['userId' => Auth::id()]);
-    }
-
-    /**
-     * Show admin home page
-     *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    private function getAdminPage()
-    {
-        $data = [
-            'orders' => Order::get(),
-        ];
-        return view('admin.index', $data);
     }
 }

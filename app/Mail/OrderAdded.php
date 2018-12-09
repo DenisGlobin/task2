@@ -37,7 +37,7 @@ class OrderAdded extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.order')
+        return $this->markdown('emails.neworder')
             ->with([
                 'id' => $this->order->id,
                 'title' => $this->order->title,
