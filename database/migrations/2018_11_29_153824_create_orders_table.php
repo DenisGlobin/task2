@@ -18,7 +18,7 @@ class CreateOrdersTable extends Migration
             $table->string('title');
             $table->string('message');
             $table->string('file_path')->nullable();
-            $table->integer('is_processed')->default(0);
+            $table->boolean('is_processed')->default(false);
             $table->integer('user_id')->unsigned()->index();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();

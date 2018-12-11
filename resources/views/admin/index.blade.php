@@ -5,12 +5,12 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">Список заявок</div>
+                    <div class="card-header">@lang('admin.orders')</div>
 
                     <div class="card-body">
-                        @if (session('status'))
-                            <div class="alert alert-success" role="alert">
-                                {{ session('status') }}
+                        @if (session('error'))
+                            <div class="alert alert-danger" role="alert">
+                                {{ session('error') }}
                             </div>
                         @endif
 
@@ -20,13 +20,13 @@
                                 <thead>
                                 <tr>
                                     <th scope="col"></th>
-                                    <th scope="col">ID</th>
-                                    <th scope="col">Тема</th>
-                                    <th scope="col">Сообщение</th>
-                                    <th scope="col">Имя клиента</th>
-                                    <th scope="col">Почтовый адрес</th>
-                                    <th scope="col">Прикреплённый файл</th>
-                                    <th scope="col">Дата создания</th>
+                                    <th scope="col">@lang('ID')</th>
+                                    <th scope="col">@lang('admin.theme')</th>
+                                    <th scope="col">@lang('admin.message')</th>
+                                    <th scope="col">@lang('admin.name')</th>
+                                    <th scope="col">@lang('admin.email')</th>
+                                    <th scope="col">@lang('admin.attach')</th>
+                                    <th scope="col">@lang('admin.date')</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -49,7 +49,7 @@
                                         <td>{{ $order->user->email }}</td>
                                         <td>
                                             @if (! is_null($order->file_path))
-                                                <a href="{{ $order->file_path }}" target="_blank">Прикреплённый файл</a></td>
+                                                <a href="{{ $order->file_path }}" target="_blank">@lang('admin.attach')</a></td>
                                             @endif
                                         <td>{{ $order->created_at }}</td>
                                     </tr>
@@ -59,7 +59,7 @@
 
                             <div class="form-row align-items-center">
                                 <div class="col-auto my-1">
-                                    <button type="submit" class="btn btn-primary">Обработать</button>
+                                    <button type="submit" class="btn btn-primary">@lang('admin.submit')</button>
                                 </div>
                             </div>
                         </form>

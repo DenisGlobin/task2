@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Order;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -17,6 +18,11 @@ class AdminController extends Controller
         $this->middleware(['auth', 'admin']);
     }
 
+    /**
+     * Get the admin home page
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index()
     {
         $data = [
@@ -34,7 +40,11 @@ class AdminController extends Controller
     public function processedOrders(Request $request)
     {
         $selectedOrders = $request->input('chkbox');
-        $this->processingOrders($selectedOrders);
+        try {
+            $this->processingOrders($selectedOrders);
+        } catch (QueryException $ex) {
+            $request->session()->flash('error', __('orders.processed_error') . $ex->getMessage());
+        }
         return view('admin.index', ['orders' => Order::get()]);
     }
 
