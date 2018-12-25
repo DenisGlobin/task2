@@ -104,7 +104,8 @@ class UserController extends Controller
     private function uploadFile(OrderRequest $request)
     {
         $file = $request->file('file');
-        $fileName = time().'_'.$file->getClientOriginalName();
+        //$fileName = time().'_'.$file->getClientOriginalName();
+        $fileName = $file->hashName();
         $path = $file->storeAs(
             'public/attach', $fileName
         );

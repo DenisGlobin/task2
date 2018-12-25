@@ -15,8 +15,8 @@ Auth::routes();
 Auth::routes(['verify' => true]);
 
 // User routes
-Route::get('/home', 'UserController@index')->name('home')->middleware('verified');
-Route::post('/', 'UserController@addOrder')->name('/orders/add')->middleware('verified');
+Route::get('/home', 'UserController@index')->name('home')->middleware('auth','verified');
+Route::post('/', 'UserController@addOrder')->name('/orders/add')->middleware('auth','verified');
 // Admin routes
 Route::get('/', 'AdminController@index')->name('orders')->middleware('auth', 'admin');
 Route::post('/orders/processed', 'AdminController@processedOrders')->name('processed')->middleware('auth', 'admin');

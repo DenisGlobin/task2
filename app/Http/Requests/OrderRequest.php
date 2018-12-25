@@ -13,7 +13,7 @@ class OrderRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,23 +24,9 @@ class OrderRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|string',
-            'message' => 'required|string|min:3',
+            'title' => 'required|string|min:3|max:120',
+            'message' => 'required|string|min:3|max:255',
             'file' => 'nullable|file',
         ];
     }
-
-    /**
-     * Get custom messages for validator errors.
-     *
-     * @return array
-     */
-    /*public function messages()
-    {
-        return [
-            'title.required' => 'Заполните поле Тема',
-            'message.required' => 'Заполните поле Текст сообщения',
-            'message.min:3' => 'Поле Текст сообщения должно содержать минимум 3 символа',
-        ];
-    }*/
 }
